@@ -141,6 +141,22 @@ func (srv *Server) newConn(rwc net.Conn) *Conn {
 	}
 }
 
+func (srv *Server) FindConn(id string) (*Conn, error) {
+	c1 := new(Conn)
+	srv.activeConn.Range(func(key, value interface{}) bool {
+		c := key.(*Conn)
+		if c.id == id {
+			c1 = c
+			return false
+		}
+		return true
+	})
+	if c1.id == "" {
+		return nil, DeviceOffline
+	}
+	return c1, nil
+}
+
 func (srv *Server) Shutdown() {
 	srv.activeConn.Range(func(key, value interface{}) bool {
 		key.(*Conn).Close()
