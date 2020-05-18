@@ -1,4 +1,4 @@
-package mbserver
+package modbus
 
 const (
 	Read    = uint8(0x03)

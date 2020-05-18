@@ -1,4 +1,4 @@
-package mbserver
+package modbus
 
 import "sync"
 

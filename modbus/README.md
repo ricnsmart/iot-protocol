@@ -1,25 +1,26 @@
-package mbserver
+# mbserver
 
-import (
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
-	"testing"
-)
+fork from tbrandon/mbserver
 
-func TestServer_Serve(t *testing.T) {
+modbus协议的TCP连接 go实现
 
-	s := NewServer()
+依赖：zap日志
 
+## Usage
+```go
+    // 设置zap log
+	Logger=zap.NewExample()
+
+    s := NewServer()
 	s.Handler = func(c *Conn, out []byte) {
 		// handle response
 	}
 	s.AfterConnClose = func(sn string) {
 		// do something
 	}
-
-	s.Debug(true)
+	s.OnStart = func() {
+		// do something
+	}
 
 	go func() {
 		err := s.StartServer(":6500")
@@ -35,4 +36,4 @@ func TestServer_Serve(t *testing.T) {
 	signal.Notify(quit, syscall.SIGTERM, os.Interrupt)
 	<-quit
 	s.Shutdown()
-}
+``` 
