@@ -41,9 +41,6 @@ type (
 		// 保存所有活动连接
 		activeConn sync.Map
 
-		// 保存listener
-		Listener net.Listener
-
 		// 用于调用方执行收尾工作
 		AfterConnClose func(id string)
 

@@ -41,9 +41,6 @@ type (
 		// 保存所有活动连接
 		activeConn sync.Map
 
-		// 保存listener
-		Listener net.Listener
-
 		// 用于调用方执行收尾工作
 		AfterConnClose func(id string)
 
@@ -103,7 +100,6 @@ func (srv *Server) StartServer(address string) error {
 	if err != nil {
 		return fmt.Errorf(`failed to listen port %v , reason: %v`, address, err)
 	}
-	srv.Listener = l
 	defer l.Close()
 	var tempDelay time.Duration // how long to sleep on accept failure
 	for {
@@ -162,7 +158,6 @@ func (srv *Server) Shutdown() {
 		key.(*Conn).Close()
 		return true
 	})
-	srv.Listener.Close()
 }
 
 func (c *Conn) Read() ([]byte, error) {
