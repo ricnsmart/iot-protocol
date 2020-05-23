@@ -195,23 +195,27 @@ func (c *Conn) Write(buf []byte) (n int, err error) {
 }
 
 func (c *Conn) Send(data []byte) error {
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
 	select {
 	case <-c.CloseNotifier:
 		return DeviceOffline
 	case c.bridgeCh <- data:
 		return nil
-	case <-time.NewTicker(5 * time.Second).C:
+	case <-ticker.C:
 		return SendMessageTimeout
 	}
 }
 
 func (c *Conn) Receive() ([]byte, error) {
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
 	select {
 	case <-c.CloseNotifier:
 		return nil, DeviceOffline
 	case buf := <-c.bridgeCh:
 		return buf, nil
-	case <-time.NewTicker(5 * time.Second).C:
+	case <-ticker.C:
 		return nil, WaitMessageTimeout
 	}
 }
